@@ -1,13 +1,17 @@
 let express = require("express");
 let router = express.Router();
-const fetch = require("node-fetch");
-
+let fetch = require("node-fetch");
 let fs = require("fs");
+// Importing Functions // 
+let handleCookTime = require("../utils/cookTimeFunction");
+let handleCooktimeDisplay = require("../utils/displayCookTimeFunction");
 router.use(express.json());
-let year = 1443;
-let api_url = `http://api.aladhan.com/v1/hijriCalendar?latitude=51.508515&longitude=-0.1254872&method=2&month=9&year=${year}`;
+
+let hijriYear = new Date().getFullYear() - 579;
+let api_url = `http://api.aladhan.com/v1/hijriCalendar?latitude=51.508515&longitude=-0.1254872&method=2&month=9&year=${hijriYear}`;
 let dishesList = JSON.parse(fs.readFileSync("./dev-data/dishes.json"));
 
+// Suggest Dish Randomly Function //
 let Max = dishesList.length;
 function generateRandom(min = 0, max = Max) {
   let difference = max - min;
@@ -16,59 +20,66 @@ function generateRandom(min = 0, max = Max) {
   rand = rand + min;
   return rand;
 }
-
 let suggestedDish = dishesList[generateRandom()];
 
+// Fetching Api Date Function
 async function fetchData() {
   const response = await fetch(api_url);
   const days = await response.json();
-  console.log(days.data);
   return days.data;
 }
-
+// Managing CookTime Function //
+// const handleCookTime = (startDate, EndDate) => {
+//   // Converting EndDate //
+//   let endDateHrs = EndDate.split(":")[0];
+//   let endDateMin = EndDate.split(":")[1].split(" ")[0];
+//   let endDateInMins = Number(endDateHrs) * 60 + Number(endDateMin);
+//   // Converting StartDate //
+//   let startDateHrs = startDate.split(":")[0];
+//   let startDateMin = startDate.split(":")[1].split(" ")[0];
+//   let startDateInMins = Number(startDateHrs) * 60 + Number(startDateMin);
+//   // Calculating Available Time ( between Asr nd Maghrib Prayer )
+//   let availableTime = endDateInMins - startDateInMins;
+//   return availableTime;
+// };
+// // Managing CookTime's Response Function //
+// const handleCooktimeDisplay = (dishDuration, availableTime, dish) => {
+//   if (dishDuration > availableTime - 15) {
+//     let minsBeforeAsr = dishDuration - availableTime;
+//     cookTime = `${minsBeforeAsr} mins Before Asr .`;
+//     dish.cookTime = cookTime;
+//     delete dish.duration;
+//   } else if (dishDuration == availableTime - 15) {
+//     let cookTime = "";
+//     let minsBeforeAsr = dishDuration - availableTime;
+//     cookTime = `${minsBeforeAsr} mins Before Asr .`;
+//     dish.cookTime = cookTime;
+//     delete dish.duration;
+//   } else if (dishDuration < availableTime - 15) {
+//     let cookTime = "";
+//     let minsAfterAsr = availableTime - 15 - dishDuration;
+//     cookTime = `${minsAfterAsr} mins After Asr .`;
+//     dish.cookTime = cookTime;
+//     delete dish.duration;
+//   }
+//   return dish;
+// };
 router.get("/", async (req, res) => {
-  /// Start Checking  Available Time To Cook  ///
   let userday = req.query.day;
-  console.log(userday);
   let array = await fetchData();
   let daySalatTiming = array[userday];
-  console.log(daySalatTiming);
   let endDate = await daySalatTiming.timings.Maghrib;
-  let endDateHrs = endDate.split(":")[0];
-  let endDateMin = endDate.split(":")[1].split(" ")[0];
-  let endDateInMins = Number(endDateHrs) * 60 + Number(endDateMin);
   let startDate = await daySalatTiming.timings.Asr;
-  let startDateHrs = startDate.split(":")[0];
-  let startDateMin = startDate.split(":")[1].split(" ")[0];
-  let startDateInMins = Number(startDateHrs) * 60 + Number(startDateMin);
-  let availableTime = endDateInMins - startDateInMins;
-  /// StEnd art Checking  Available Time To Cook  ///
-  ///  Start Adding CookTime To Each Dish   ///
 
-  if (Number(suggestedDish.duration) > availableTime - 15) {
-    let minsBeforeAsr = Number(suggestedDish.duration) - availableTime;
-    cookTime = `${minsBeforeAsr} mins Before Asr .`;
-    suggestedDish.cookTime = cookTime;
-    // delete suggestedDish.duration;
-  } else if (Number(suggestedDish.duration) == availableTime - 15) {
-    let cookTime = "";
-    let minsBeforeAsr = Number(suggestedDish.duration) - availableTime;
-    cookTime = `${minsBeforeAsr} mins Before Asr .`;
-    suggestedDish.cookTime = cookTime;
-    // delete suggestedDish.duration;
-  } else if (Number(suggestedDish.duration) < availableTime - 15) {
-    let cookTime = "";
-    let minsAfterAsr = availableTime - 15 - Number(suggestedDish.duration);
-    cookTime = `${minsAfterAsr} mins After Asr .`;
-    suggestedDish.cookTime = cookTime;
-    // delete suggestedDish.duration;
-  }
+  handleCookTime(startDate, endDate);
+  handleCooktimeDisplay(
+    Number(suggestedDish.duration),
+    handleCookTime(startDate, endDate),
+    suggestedDish
+  );
 
-  ///  End Adding CookTime To Each Dish   ///
   res.send({
     state: "success",
-    availableTime: availableTime,
-    //   availableTime: availableTime,
     SuggDishes: suggestedDish,
   });
 });

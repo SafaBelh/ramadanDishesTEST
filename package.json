@@ -12,7 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3",
-    "moment": "^2.29.1",
     "node-fetch": "^2.6.7",
     "nodemon": "^2.0.15"
   }

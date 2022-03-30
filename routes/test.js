@@ -22,8 +22,7 @@ router.get("/", async (req, res) => {
   // Start Returning List Of Dishes That Includes The User's Passed Ingredient //
   let suggDishes = [];
   let userIngredient =
-    req.query.ingredient.toLocaleLowerCase()[0].toUpperCase() +
-    req.query.ingredient.slice(1);
+    req.query.ingredient[0].toUpperCase() + req.query.ingredient.slice(1);
   dishesList.forEach((dish) => {
     if (dish.ingredients.includes(userIngredient)) {
       suggDishes = [...suggDishes, dish];
