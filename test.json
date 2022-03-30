@@ -1,0 +1,72 @@
+{
+  "code": 200,
+  "status": "OK",
+  "data": {
+    "timings": {
+      "Fajr": "04:56",
+      "Sunrise": "06:12",
+      "Dhuhr": "12:27",
+      "Asr": "15:54",
+      "Sunset": "18:42",
+      "Maghrib": "18:42",
+      "Isha": "19:54",
+      "Imsak": "04:46",
+      "Midnight": "00:27"
+    },
+    "date": {
+      "readable": "06 Apr 2022",
+      "timestamp": "1649199600",
+      "hijri": {
+        "date": "04-09-1443",
+        "format": "DD-MM-YYYY",
+        "day": "04",
+        "weekday": {
+          "en": "Al Arba'a",
+          "ar": "\u0627\u0644\u0627\u0631\u0628\u0639\u0627\u0621"
+        },
+        "month": {
+          "number": 9,
+          "en": "Rama\u1e0d\u0101n",
+          "ar": "\u0631\u064e\u0645\u064e\u0636\u0627\u0646"
+        },
+        "year": "1443",
+        "designation": { "abbreviated": "AH", "expanded": "Anno Hegirae" },
+        "holidays": []
+      },
+      "gregorian": {
+        "date": "06-04-2022",
+        "format": "DD-MM-YYYY",
+        "day": "06",
+        "weekday": { "en": "Wednesday" },
+        "month": { "number": 4, "en": "April" },
+        "year": "2022",
+        "designation": { "abbreviated": "AD", "expanded": "Anno Domini" }
+      }
+    },
+    "meta": {
+      "latitude": 23.424076,
+      "longitude": 53.847818,
+      "timezone": "Asia/Dubai",
+      "method": {
+        "id": 3,
+        "name": "Muslim World League",
+        "params": { "Fajr": 18, "Isha": 17 },
+        "location": { "latitude": 51.5194682, "longitude": -0.1360365 }
+      },
+      "latitudeAdjustmentMethod": "ANGLE_BASED",
+      "midnightMode": "STANDARD",
+      "school": "STANDARD",
+      "offset": {
+        "Imsak": 0,
+        "Fajr": 0,
+        "Sunrise": 0,
+        "Dhuhr": 0,
+        "Asr": 0,
+        "Maghrib": 0,
+        "Sunset": 0,
+        "Isha": 0,
+        "Midnight": 0
+      }
+    }
+  }
+}
